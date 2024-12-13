@@ -63,7 +63,7 @@ function isString(value) {
  *   concatenateStrings('', 'bb') => 'bb'
  */
 function concatenateStrings(value1, value2) {
-  return String.prototype.concat(value1, value2);
+  return value1.concat(value2);
 }
 
 /**
@@ -205,16 +205,15 @@ function sumOfCodes(str) {
   let result = 0;
   if (
     typeof str === 'undefined' ||
-    str.length === 0 ||
     str === null ||
+    str.length < 1 ||
     str.isNaN
   ) {
     return 0;
   }
-  const arrayChars = str.split('');
-  for (let index = 0; index < arrayChars.length; ) {
-    result += arrayChars[index].charCodeAt();
-    index += 1;
+
+  for (let index = 0; index < str.length; index += 1) {
+    result += str[index].charCodeAt();
   }
   return result;
 }
@@ -269,18 +268,7 @@ function endsWith(str, substr) {
  *   formatTime(0, 0) => "00:00"
  */
 function formatTime(minutes, seconds) {
-  let time = '';
-  if (minutes.toString().length < 2) {
-    time += `0${minutes}:`;
-  } else {
-    time += `${minutes}:`;
-  }
-  if (seconds.toString().length < 2) {
-    time += `0${seconds}`;
-  } else {
-    time += `${seconds}`;
-  }
-  return time;
+  return `${String(minutes).padStart(2, 0)}:${String(seconds).padStart(2, 0)}`;
 }
 
 /**
@@ -404,8 +392,15 @@ function isPalindrome(str) {
  *   findLongestWord('A long and winding road') => 'winding'
  *   findLongestWord('No words here') => 'words'
  */
-function findLongestWord(/* sentence */) {
-  throw new Error('Not implemented');
+function findLongestWord(sentence) {
+  let result = '';
+  sentence.split(' ').reduce((accun, value) => {
+    if (result.length < value.length) {
+      result = value;
+    }
+    return accun;
+  }, 0);
+  return result;
 }
 
 /**
@@ -540,8 +535,29 @@ function extractEmails(str) {
  *    => 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
  *
  */
-function encodeToRot13(/* str */) {
-  throw new Error('Not implemented');
+function encodeToRot13(str) {
+  const alphabetCount = 26;
+  const positionStartUpperChar = 65;
+  const positionStartLowerChar = 97;
+
+  return str
+    .split('')
+    .map((char) => {
+      if (char >= 'A' && char <= 'Z') {
+        return String.fromCharCode(
+          ((char.charCodeAt(0) - positionStartUpperChar + 13) % alphabetCount) +
+            positionStartUpperChar
+        );
+      }
+      if (char >= 'a' && char <= 'z') {
+        return String.fromCharCode(
+          ((char.charCodeAt(0) - positionStartLowerChar + 13) % alphabetCount) +
+            positionStartLowerChar
+        );
+      }
+      return char;
+    })
+    .join('');
 }
 
 /**
